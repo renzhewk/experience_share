@@ -1,0 +1,77 @@
+/*
+  appstore的充值走的是https，那么引入处理模块
+*/
+var https = require('https'); 
+
+/*
+  这个数据就是待验证的信息
+*/
+var receipt = 'ewoJInNpZ25hdHVyZSIgPSAiQXFkaGlxb1pPVWZyZjFrNEtCQ25UbDFIRUZ6N09ndjl6WXlYWnNzYTU1eUtzUzZFYzBtYXM1MDk2V2ZPVElnWTlkQmhnb2NZdGJLSHJwUFlwOGkxQ29EcG9UT3VDcGZ2YkVtOTJmNFdzdjlCdVoxMDFjZHBsQWVzWlFwYzkrMmtYR1l5L1BhV1NkOFkzOFFJbVc4R1pUdGRTMDZDME9CSmlVQVBGRndJTDJYSUFBQURWekNDQTFNd2dnSTdvQU1DQVFJQ0NHVVVrVTNaV0FTMU1BMEdDU3FHU0liM0RRRUJCUVVBTUg4eEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUtEQXBCY0hCc1pTQkpibU11TVNZd0pBWURWUVFMREIxQmNIQnNaU0JEWlhKMGFXWnBZMkYwYVc5dUlFRjFkR2h2Y21sMGVURXpNREVHQTFVRUF3d3FRWEJ3YkdVZ2FWUjFibVZ6SUZOMGIzSmxJRU5sY25ScFptbGpZWFJwYjI0Z1FYVjBhRzl5YVhSNU1CNFhEVEE1TURZeE5USXlNRFUxTmxvWERURTBNRFl4TkRJeU1EVTFObG93WkRFak1DRUdBMVVFQXd3YVVIVnlZMmhoYzJWU1pXTmxhWEIwUTJWeWRHbG1hV05oZEdVeEd6QVpCZ05WQkFzTUVrRndjR3hsSUdsVWRXNWxjeUJUZEc5eVpURVRNQkVHQTFVRUNnd0tRWEJ3YkdVZ1NXNWpMakVMTUFrR0ExVUVCaE1DVlZNd2daOHdEUVlKS29aSWh2Y05BUUVCQlFBRGdZMEFNSUdKQW9HQkFNclJqRjJjdDRJclNkaVRDaGFJMGc4cHd2L2NtSHM4cC9Sd1YvcnQvOTFYS1ZoTmw0WElCaW1LalFRTmZnSHNEczZ5anUrK0RyS0pFN3VLc3BoTWRkS1lmRkU1ckdYc0FkQkVqQndSSXhleFRldngzSExFRkdBdDFtb0t4NTA5ZGh4dGlJZERnSnYyWWFWczQ5QjB1SnZOZHk2U01xTk5MSHNETHpEUzlvWkhBZ01CQUFHamNqQndNQXdHQTFVZEV3RUIvd1FDTUFBd0h3WURWUjBqQkJnd0ZvQVVOaDNvNHAyQzBnRVl0VEpyRHRkREM1RllRem93RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlNwZzRQeUdVakZQaEpYQ0JUTXphTittVjhrOVRBUUJnb3Foa2lHOTJOa0JnVUJCQUlGQURBTkJna3Foa2lHOXcwQkFRVUZBQU9DQVFFQUVhU2JQanRtTjRDL0lCM1FFcEszMlJ4YWNDRFhkVlhBZVZSZVM1RmFaeGMrdDg4cFFQOTNCaUF4dmRXLzNlVFNNR1k1RmJlQVlMM2V0cVA1Z204d3JGb2pYMGlreVZSU3RRKy9BUTBLRWp0cUIwN2tMczlRVWU4Y3pSOFVHZmRNMUV1bVYvVWd2RGQ0TndOWXhMUU1nNFdUUWZna1FRVnk4R1had1ZIZ2JFL1VDNlk3MDUzcEdYQms1MU5QTTN3b3hoZDNnU1JMdlhqK2xvSHNTdGNURXFlOXBCRHBtRzUrc2s0dHcrR0szR01lRU41LytlMVFUOW5wL0tsMW5qK2FCdzdDMHhzeTBiRm5hQWQxY1NTNnhkb3J5L0NVdk02Z3RLc21uT09kcVRlc2JwMGJzOHNuNldxczBDOWRnY3hSSHVPTVoydG04bnBMVW03YXJnT1N6UT09IjsKCSJwdXJjaGFzZS1pbmZvIiA9ICJld29KSW05eWFXZHBibUZzTFhCMWNtTm9ZWE5sTFdSaGRHVXRjSE4wSWlBOUlDSXlNREV6TFRFeUxURXpJREF5T2pJNU9qQTNJRUZ0WlhKcFkyRXZURzl6WDBGdVoyVnNaWE1pT3dvSkluVnVhWEYxWlMxcFpHVnVkR2xtYVdWeUlpQTlJQ0poTm1FMk16QTFNbUZpWkRjellUa3hPRE5tWXprNE4ySmtPRFpsTmpsall6Tm1ZemRtT1dVNUlqc0tDU0p2Y21sbmFXNWhiQzEwY21GdWMyRmpkR2x2YmkxcFpDSWdQU0FpTVRBd01EQXdNREE1TmpRNU5qRTVPU0k3Q2draVluWnljeUlnUFNBaU1TNDBMalVpT3dvSkluUnlZVzV6WVdOMGFXOXVMV2xrSWlBOUlDSXhNREF3TURBd01EazJORGsyTVRrNUlqc0tDU0p4ZFdGdWRHbDBlU0lnUFNBaU1TSTdDZ2tpYjNKcFoybHVZV3d0Y0hWeVkyaGhjMlV0WkdGMFpTMXRjeUlnUFNBaU1UTTROamt6TURVME56VTBOU0k3Q2draWRXNXBjWFZsTFhabGJtUnZjaTFwWkdWdWRHbG1hV1Z5SWlBOUlDSTNNa1pCTWtWQ1JpMDJNVEF3TFRRNVF6VXRRakkwT0MwNE4wTTRNVGM0TWpNM1EwRWlPd29KSW5CeWIyUjFZM1F0YVdRaUlEMGdJbU52YlM1aWJHbHVaM04wYjNKdExuTmhibWQxYnk1bmIyeGtNekU0SWpzS0NTSnBkR1Z0TFdsa0lpQTlJQ0kyTURRek5qQTJOak1pT3dvSkltSnBaQ0lnUFNBaVkyOXRMbUpzYVc1bmMzUnZjbTB1YzJGdVozVnZJanNLQ1NKd2RYSmphR0Z6WlMxa1lYUmxMVzF6SWlBOUlDSXhNemcyT1RNd05UUTNOVFExSWpzS0NTSndkWEpqYUdGelpTMWtZWFJsSWlBOUlDSXlNREV6TFRFeUxURXpJREV3T2pJNU9qQTNJRVYwWXk5SFRWUWlPd29KSW5CMWNtTm9ZWE5sTFdSaGRHVXRjSE4wSWlBOUlDSXlNREV6TFRFeUxURXpJREF5T2pJNU9qQTNJRUZ0WlhKcFkyRXZURzl6WDBGdVoyVnNaWE1pT3dvSkltOXlhV2RwYm1Gc0xYQjFjbU5vWVhObExXUmhkR1VpSUQwZ0lqSXdNVE10TVRJdE1UTWdNVEE2TWprNk1EY2dSWFJqTDBkTlZDSTdDbjA9IjsKCSJlbnZpcm9ubWVudCIgPSAiU2FuZGJveCI7CgkicG9kIiA9ICIxMDAiOwoJInNpZ25pbmctc3RhdHVzIiA9ICIwIjsKfQ==';
+
+/*
+  构造发送给apple服务器的信息格式
+*/
+var verifyData = {"receipt-data": receipt}
+,    verifyResult = "";
+
+
+/*
+  构造https的各项参数
+*/
+var appleHost = "sandbox.itunes.apple.com"; //这是沙盒模式下的验证host
+// var appleHost = "buy.itunes.apple.com"; //这是正式环境下的验证host
+var options = {
+    host: appleHost,
+    port: 443,
+    path: "/verifyReceipt",
+    method: "POST"
+};
+
+/*
+  验证信息
+*/
+var req = https.request(options, function(res){
+      res.on("data", function(chunk){
+          verifyResult += chunk;
+      });
+      res.on("end", function(){
+          console.log('verifyResult: ', verifyResult);
+      });
+    });
+req.write(JSON.stringify(verifyData));
+req.end();
+
+
+/*
+  这里是验证完成后返回的信息
+  {
+    "receipt": {
+        "original_purchase_date_pst": "2013-12-13 02:29:07 America/Los_Angeles",
+        "purchase_date_ms": "1386930547545",
+        "unique_identifier": "a6a63052abd73a9183fc987bd86e69cc3fc7f9e9",
+        "original_transaction_id": "1000000096496199",
+        "bvrs": "1.4.5",
+        "transaction_id": "1000000096496199",
+        "quantity": "1",
+        "unique_vendor_identifier": "72FA2EBF-6100-49C5-B248-87C8178237CA",
+        "item_id": "604360663",
+        "product_id": "com.blingstorm.sanguo.gold318",
+        "purchase_date": "2013-12-13 10:29:07 Etc/GMT",
+        "original_purchase_date": "2013-12-13 10:29:07 Etc/GMT",
+        "purchase_date_pst": "2013-12-13 02:29:07 America/Los_Angeles",
+        "bid": "com.blingstorm.sanguo",
+        "original_purchase_date_ms": "1386930547545"
+    },
+    "status": 0
+  }
+*/
+
+
+
+
+
+
+
+
+
+
