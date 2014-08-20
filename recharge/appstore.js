@@ -55,7 +55,7 @@ req.end();
         "quantity": "1",
         "unique_vendor_identifier": "72FA2EBF-6100-49C5-B248-87C8178237CA",
         "item_id": "604360663",
-        "product_id": "com.blingstorm.sanguo.gold318",
+        "product_id": "xxxxxxxx",
         "purchase_date": "2013-12-13 10:29:07 Etc/GMT",
         "original_purchase_date": "2013-12-13 10:29:07 Etc/GMT",
         "purchase_date_pst": "2013-12-13 02:29:07 America/Los_Angeles",
