@@ -67,6 +67,7 @@ req.end();
 
   注意：
     bid字段的内容使用XXXXXX替代了，内含项目信息
+    product_id字段的内容使用XXXXXX替代了，内含项目信息
 */
 
 
